@@ -1,4 +1,5 @@
 # set up colors to differentiate make logs
+NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
@@ -33,7 +34,7 @@ init:
 
 install:
 	@echo "$(OK_COLOR)==> Install $(BIN)$(NO_COLOR)"
-	go install ${LDFLAGS} ./cmd/...
+	go install ${LDFLAGS} ./src/...
 
 format:
 		@echo "$(OK_COLOR)==> Formatting$(NO_COLOR)"
