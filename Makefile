@@ -43,6 +43,11 @@ format:
 lint:
 		@echo "$(OK_COLOR)==> Linting$(NO_COLOR)"
 		go list -f '{{.Dir}}' ./... | grep -v 'vendor' | xargs gometalinter --vendored-linters --vendor --concurrency=8 --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=goconst --enable=gosimple --enable=misspell --deadline=600s
+
+lint-circle:
+		@echo "$(OK_COLOR)==> Running circle lint$(NO_COLOR)"
+		go list -f '{{.Dir}}' ./... | grep -v 'vendor' | xargs gometalinter --vendored-linters --deadline=2m --vendor --concurrency=1 --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=goconst --enable=gosimple --enable=misspell --json > lint.json
+
 qt:
 		@echo "$(OK_COLOR)==> Running quick test$(NO_COLOR)"
 		go test -short $(GO_PACKAGES)
@@ -53,6 +58,11 @@ run: install
 test: format vet lint
 		@echo "$(OK_COLOR)==> Testing $(NO_COLOR)"
 		go test -race -cover $(GO_PACKAGES)
+		
+test-circle:
+		@echo "$(OK_COLOR)==> Running circle test$(NO_COLOR)"
+		mkdir -p $(CIRCLE_TEST_REPORTS)
+		/bin/bash -c "set -euxo pipefail; go test -v -short -race -cover $(GO_PACKAGES) | go-junit-report > $(CIRCLE_TEST_REPORTS)/report.xml"
 
 version:
 			@echo $(VERSION)

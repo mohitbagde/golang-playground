@@ -1,0 +1,39 @@
+machine:
+  post:
+    - curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.13.1.tgz && sudo tar --strip-components=1 -xvzf docker-1.13.1.tgz -C /usr/local/bin
+    - sudo container=yes docker daemon: { background: true }
+  environment:
+    GIMME_OS: linux
+    GIMME_ARCH: amd64
+    GIMME_GO_VERSION: 1.8
+    GOROOT: $HOME/.gimme/versions/go$GIMME_GO_VERSION.$GIMME_OS.$GIMME_ARCH
+    PATH: $GOROOT/bin:$PATH
+    VERSION: ${CIRCLE_SHA1:0:7}
+    BUILD_COMMIT: ${CIRCLE_SHA1:0:7}
+
+checkout:
+  post:
+    - rm -rf ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME
+    - mkdir -p ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME
+    - cp -R ~/$CIRCLE_PROJECT_REPONAME/* ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME/
+    - cp -R ~/$CIRCLE_PROJECT_REPONAME/.git ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME/
+    - rm -rf ~/$CIRCLE_PROJECT_REPONAME
+    - ln -s ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME
+
+dependencies:
+  cache_directories:
+    - ~/bin
+  override:
+    - curl -sL -o ~/bin/gimme https://raw.githubusercontent.com/travis-ci/gimme/master/gimme
+    - chmod +x ~/bin/gimme
+    - eval "$(gimme)" && go version
+    # deps are already vendored
+    - make init
+
+test:
+  override:
+    # remove stale packages
+    - rm -rf ~/.go_workspace/pkg/linux_amd64/*
+    # go vet doesn't work with symlinks https://github.com/golang/go/issues/12556
+    - cd ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME; make lint-circle
+    - make test-circle
