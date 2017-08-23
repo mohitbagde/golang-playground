@@ -12,8 +12,6 @@ import (
 
 	"strings"
 	"time"
-
-	"github.mheducation.com/MHEducation/dle-orchestration/orchestration/logging"
 )
 
 const nonceLength = 8
@@ -28,13 +26,17 @@ func init() {
 
 // OauthSignature helpers
 type OauthSignature struct {
-	method string
-	scheme string
-	host   string
-	path   string
-	data   url.Values
-	key    string
-	secret string
+	method      string
+	scheme      string
+	host        string
+	path        string
+	data        url.Values
+	key         string
+	secret      string
+	tokenSecret string
+	hashKey     string
+	baseString  string
+	signature   string
 }
 
 // NewOauthSignature Creates a new instance of OauthSignature
@@ -44,17 +46,15 @@ func NewOauthSignature(method, scheme, host, path string, data url.Values, key s
 
 // CalcOAuthSignature Calculates an OAuth signature for the request
 func (o *OauthSignature) CalcOAuthSignature(ctx context.Context) string {
-
-	// Define logger, config objects
-	logger := logging.FromContext(ctx)
-	logger = logger.WithField("context", "OAuth")
-
 	// Parse request of unnecessary OAuth parameters (not required to calculate signature)
 	o.data.Del("oauth_signature")
 	o.data.Del("oauth_token")
+	// Generate the key from client/consumer secret & token secret in Router config
+	//@TODO if a token secret is passed, use that as well for the signing key
+	key := fmt.Sprintf("%s&", o.secret)
 
 	// Prepare the base string from the remaining request parameters
-	baseString := fmt.Sprintf(
+	o.baseString = fmt.Sprintf(
 		"%s&%s%s%s&%s",
 		url.QueryEscape(o.method),
 		url.QueryEscape(o.scheme),
@@ -62,20 +62,20 @@ func (o *OauthSignature) CalcOAuthSignature(ctx context.Context) string {
 		url.QueryEscape(o.path),
 		url.QueryEscape(strings.Replace(o.data.Encode(), "+", "%20", -1)))
 
-	// Generate the key from client/consumer secret in Router config
-	key := fmt.Sprintf("%s&", o.secret)
 	// Generate signature based on key and base string and return it
-	hash, err := o.calcHash(baseString, key)
+	signature, err := o.calcHash(key)
 	if err != nil {
-		logger.WithError(err).Error("Error calculating hash")
+		fmt.Println("Error calculating hash")
 	}
-	return hash
+	o.signature = signature
+
+	return o.signature
 }
 
 // Calculate the oauth_signature value based on the base string and the key
-func (o *OauthSignature) calcHash(baseString string, key string) (string, error) {
+func (o *OauthSignature) calcHash(key string) (string, error) {
 	mac := hmac.New(sha1.New, []byte(key))
-	_, err := mac.Write([]byte(baseString))
+	_, err := mac.Write([]byte(o.baseString))
 	return base64.StdEncoding.EncodeToString(mac.Sum(nil)), err
 }
 

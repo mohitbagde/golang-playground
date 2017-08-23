@@ -5,7 +5,7 @@ ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
 # The binary to build
-BIN := orchestration
+BIN := playground
 
 # all the packages in the code
 GO_PACKAGES = $(shell go list ./... | grep -v vendor | grep -v mocks)
@@ -34,7 +34,7 @@ init:
 
 install:
 	@echo "$(OK_COLOR)==> Install $(BIN)$(NO_COLOR)"
-	go install ${LDFLAGS} ./src/...
+	go install ${LDFLAGS} ./cmd/...
 
 format:
 		@echo "$(OK_COLOR)==> Formatting$(NO_COLOR)"
@@ -43,6 +43,12 @@ format:
 lint:
 		@echo "$(OK_COLOR)==> Linting$(NO_COLOR)"
 		go list -f '{{.Dir}}' ./... | grep -v 'vendor' | xargs gometalinter --vendored-linters --vendor --concurrency=8 --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=goconst --enable=gosimple --enable=misspell --deadline=600s
+qt:
+		@echo "$(OK_COLOR)==> Running quick test$(NO_COLOR)"
+		go test -short $(GO_PACKAGES)
+run: install
+		@echo "$(OK_COLOR)==> Run $(BIN)$(NO_COLOR)"
+		$(GOPATH)/bin/$(BIN)
 
 test: format vet lint
 		@echo "$(OK_COLOR)==> Testing $(NO_COLOR)"

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <h2>OAuth 1.0 Validator v1.0.0</h2>
+    <div>
+      <h3>Result: {{.SuccessMsg}}</h3>
+    <div>
+      <h3>Stored Consumer Secret</h3>{{.HashKey}}
+      <h3>Received Signature</h3>{{.ActualSignature}}
+      <h3>Caclulated Signature</h3>{{.ExpectedSignature}}
+    </div>
+    <div>
+      <h3>BaseString</h3>{{.BaseString}}
+    </div>
+</body>
+</html>

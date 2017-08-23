@@ -1,7 +1,8 @@
-package main
+package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/facebookgo/httpdown"
@@ -13,16 +14,21 @@ type Server struct {
 	ctx      context.Context
 }
 
-func main() {
-
-	ctx := context.Background()
+// New creates a server struct
+func New(ctx context.Context) *Server {
 	s := Server{
 		ctx: ctx,
 	}
-	s.ServeMux = http.NewServeMux()
+	s.init()
+	return &s
+}
+
+// Start the Server
+func (s *Server) Start() {
+	addr := fmt.Sprintf(":8003")
 
 	server := &http.Server{
-		Addr:    "8001",
+		Addr:    addr,
 		Handler: s.ServeMux,
 	}
 	hd := &httpdown.HTTP{
@@ -30,6 +36,7 @@ func main() {
 		KillTimeout: 15,
 	}
 
+	fmt.Println("Listening on ", addr)
 	if err := httpdown.ListenAndServe(server, hd); err != nil {
 		panic(err)
 	}
