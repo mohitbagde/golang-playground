@@ -25,6 +25,14 @@ SRC_DIRS := cmd playground ui
 # This version-strategy uses git tags to set the version string
 VERSION ?= $(shell git describe --always --dirty)
 
+COVER_HTML = $(CIRCLE_ARTIFACTS)/htmlcov/index.html
+
+coverage:
+	@echo "$(OK_COLOR)==> Generating Coverage Report$(NO_COLOR)"
+	mkdir -p $(CIRCLE_ARTIFACTS)/htmlcov
+	overalls -project=$(PKG) -covermode=count
+	go tool cover -html=overalls.coverprofile -o $(COVER_HTML)
+	
 init:
 	@echo "$(OK_COLOR)==> Init$(NO_COLOR)"
 	go get -u github.com/nota/gvt

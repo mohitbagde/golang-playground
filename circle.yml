@@ -1,7 +1,4 @@
 machine:
-  post:
-    - curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-1.13.1.tgz && sudo tar --strip-components=1 -xvzf docker-1.13.1.tgz -C /usr/local/bin
-    - sudo container=yes docker daemon: { background: true }
   environment:
     GIMME_OS: linux
     GIMME_ARCH: amd64
@@ -37,3 +34,4 @@ test:
     # go vet doesn't work with symlinks https://github.com/golang/go/issues/12556
     - cd ~/.go_workspace/src/github.com/mohitbagde/golang-playground; make lint-circle
     - make test-circle
+    - make coverage
