@@ -20,7 +20,7 @@ LDFLAGS = -ldflags="-X ${PKG}/pkg/version.VERSION=${VERSION}"
 PKG := github.com/mohitbagde/golang-playground
 
 # directories which hold app source (not vendored)
-SRC_DIRS := oauth
+SRC_DIRS := cmd playground ui
 
 # This version-strategy uses git tags to set the version string
 VERSION ?= $(shell git describe --always --dirty)
@@ -58,7 +58,7 @@ run: install
 test: format vet lint
 		@echo "$(OK_COLOR)==> Testing $(NO_COLOR)"
 		go test -race -cover $(GO_PACKAGES)
-		
+
 test-circle:
 		@echo "$(OK_COLOR)==> Running circle test$(NO_COLOR)"
 		mkdir -p $(CIRCLE_TEST_REPORTS)

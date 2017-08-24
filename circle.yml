@@ -13,12 +13,12 @@ machine:
 
 checkout:
   post:
-    - rm -rf ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME
-    - mkdir -p ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME
-    - cp -R ~/$CIRCLE_PROJECT_REPONAME/* ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME/
-    - cp -R ~/$CIRCLE_PROJECT_REPONAME/.git ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME/
-    - rm -rf ~/$CIRCLE_PROJECT_REPONAME
-    - ln -s ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME
+    - rm -rf ~/.go_workspace/src/github.com/mohitbagde/golang-playground
+    - mkdir -p ~/.go_workspace/src/github.com/mohitbagde/golang-playground
+    - cp -R ~/golang-playground/* ~/.go_workspace/src/github.com/mohitbagde/golang-playground/
+    - cp -R ~/golang-playground/.git ~/.go_workspace/src/github.com/mohitbagde/golang-playground/
+    - rm -rf ~/golang-playground
+    - ln -s ~/.go_workspace/src/github.com/mohitbagde/golang-playground ~/golang-playground
 
 dependencies:
   cache_directories:
@@ -35,5 +35,5 @@ test:
     # remove stale packages
     - rm -rf ~/.go_workspace/pkg/linux_amd64/*
     # go vet doesn't work with symlinks https://github.com/golang/go/issues/12556
-    - cd ~/.go_workspace/src/github.mheducation.com/MHEducation/$CIRCLE_PROJECT_REPONAME; make lint-circle
+    - cd ~/.go_workspace/src/github.com/mohitbagde/golang-playground; make lint-circle
     - make test-circle
