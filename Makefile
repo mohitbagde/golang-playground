@@ -32,6 +32,8 @@ init:
 	go get -u github.com/go-playground/overalls
 	go get -u github.com/facebookgo/httpdown
 	go get -u github.com/gorilla/mux
+	go get -u github.com/stretchr/testify/assert
+	go get -u github.com/jstemmer/go-junit-report
 	gometalinter --install
 
 install:

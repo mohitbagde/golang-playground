@@ -1,11 +1,10 @@
 package common
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.mheducation.com/MHEducation/dle-orchestration/orchestration/test"
 
 	"github.com/stretchr/testify/assert"
 
@@ -73,7 +72,8 @@ func TestPrepareOAuth(t *testing.T) {
 		"lti_message_type": {"basic-lti-launch-request"},
 	}
 	uri := scheme + host + path
-	ctx := test.NewTestContext()
+	ctx := context.Background()
+
 	oauth := NewOauthSignature(method, scheme, host, path, data, "test-key", "test-secret")
 
 	req, err := http.NewRequest(method, uri, strings.NewReader(data.Encode()))

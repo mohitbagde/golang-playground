@@ -21,7 +21,6 @@ func VerifyOAuth(ctx context.Context, r *http.Request) error {
 	actualMAC := r.PostForm.Get("oauth_signature")
 	key := r.PostFormValue("oauth_consumer_key")
 	sig := common.NewOauthSignature(r.Method, scheme, r.Host, r.URL.Path, r.PostForm, key, "secret")
-	fmt.Println("Received Signature :", actualMAC)
 
 	// Verify that the OAuth signatures match
 	if !strings.EqualFold(actualMAC, sig.CalcOAuthSignature(ctx)) {

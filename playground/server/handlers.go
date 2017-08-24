@@ -13,7 +13,7 @@ func (s *Server) healthHandler(ctx context.Context) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
 
-		w.Write([]byte("Health Check passed!"))
+		_, _ = w.Write([]byte("Health Check passed!"))
 	})
 }
 
@@ -22,7 +22,7 @@ func (s *Server) oauthHandler(ctx context.Context) http.Handler {
 		// Parse the request body
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
-			w.Write([]byte("Unable to parse Request!"))
+			_, _ = w.Write([]byte("Unable to parse Request!"))
 			return
 		}
 		// Display the OAuth received from MHCampus
@@ -34,7 +34,5 @@ func (s *Server) oauthHandler(ctx context.Context) http.Handler {
 		oauth.CalcOAuthSignature(ctx)
 		absPath, _ := filepath.Abs("./ui/index.html")
 		common.RenderOauth(w, actualMAC, oauth, absPath)
-		return
-
 	})
 }
