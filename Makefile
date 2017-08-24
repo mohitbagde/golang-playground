@@ -30,6 +30,8 @@ init:
 	go get -u github.com/nota/gvt
 	go get -u github.com/alecthomas/gometalinter
 	go get -u github.com/go-playground/overalls
+	go get -u github.com/facebookgo/httpdown
+	go get -u github.com/gorilla/mux
 	gometalinter --install
 
 install:
