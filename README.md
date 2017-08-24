@@ -1,3 +1,6 @@
+## CircleCI Build Status : [![CircleCI](https://circleci.com/gh/mohitbagde/golang-playground.svg?style=svg)](https://circleci.com/gh/mohitbagde/golang-playground)
+
+
 # golang-playground
 My go playground to test stuff out on!
 
